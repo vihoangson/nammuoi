@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Encrypt {
+class MY_Encrypt extends CI_Encrypt {
     function sha256encrypt($string,$secret_key,$secret_iv) {
         $method = 'aes-256-cfb';
         $encrypted = base64_encode( openssl_encrypt ($string, $method, $secret_key, true, $secret_iv));
