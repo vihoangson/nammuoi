@@ -6,48 +6,100 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . 'libraries/REST_Controller.php';
 
 Class Account extends REST_Controller {
-    const keyerror = 1;
-    const errmsg = "Dữ liệu không đồng bộ, vui lòng kiểm tra lại thông tin";
-    const keyid = 'xPpRsxTN4esDHLRtAJRvTFS5URF7635p';
-    const iv = 'DcNtxaMP6jrcujEJ';
 
-    /**
-     * @url /5050/account/test
-     */
-    public function test_get(){
+    const keyerror = 1;
+    const errmsg   = "Dữ liệu không đồng bộ, vui lòng kiểm tra lại thông tin";
+    const keyid    = 'xPpRsxTN4esDHLRtAJRvTFS5URF7635p';
+    const iv       = 'DcNtxaMP6jrcujEJ';
+
+    public function __construct($config = 'rest') {
+        parent::__construct($config);
+
         $this->load->library('cvskey');
         $this->load->library('encrypt');
         $this->load->model('5050/maccount');
-
-        $emei='1';
-        $name='1';
-        $refid='1';
-        $result['value'] = $this->maccount->insert($emei,$name,$refid,self::keyid,self::iv);
-
-        $this->response([2,3,4,5]);
-
     }
 
+
     /**
+     * Create account
+     *
+     * @param string emei
+     * @param string name
+     * @param string key hashkey
+     * @param string refid
+     *
+     * @method post
      * @url /5050/account/insert
+     *
+     * @return void json
      */
     public function insert_post() {
-        $this->load->library('cvskey');
-        $this->load->library('encrypt');
 
 
-        $emei = $this->post('emei');
-        $name = $this->post('name');
+        $emei      = $this->post('emei');
+        $name      = $this->post('name');
         $clientkey = $this->post('key');
-        $refid = $this->post('refid');
-        $check = $this->cvskey->Check2('PvCSchHCxTpaqBqC0',$clientkey);
+        $refid     = $this->post('refid');
+
+        $check = $this->cvskey->Check2('PvCSchHCxTpaqBqC0', $clientkey);
         if (!$check) {
-            $result['err'] = self::keyerror;
+            $result['err']    = self::keyerror;
             $result['errmsg'] = self::errmsg;
             $this->response($result);
         }
-        $result['err'] = 0;
-        $result['value'] = $this->maccount->insert($emei,$name,$refid,self::keyid,self::iv);
+
+        $result['err']   = 0;
+        $result['value'] = $this->maccount->insert($emei, $name, $refid, self::keyid, self::iv);
         $this->response($result);
+    }
+
+    /**
+     * Create account
+     *
+     * @param string emei
+     * @param string name
+     * @param string key hashkey
+     * @param string refid
+     *
+     * @method post
+     * @url /5050/account/checkidkeyexists
+     *
+     * @return void json
+     */
+    function checkidkeyexists_post() {
+        $idkey     = $this->post('idkey');
+        $imei      = $this->post('emei');
+        $clientkey = $this->post('key');
+        $szid      = $this->encrypt->sha256decrypt($idkey, self::keyid, self::iv);
+
+        $checkkey = $this->cvskey->Check2($szid, $clientkey);
+        if (!$checkkey) {
+            $result['err']    = self::keyerror;
+            $result['errmsg'] = self::errmsg;
+            $this->response($result);
+        }
+        $id      = $this->cvskey->getid($szid);
+        $checkid = $this->maccount->CheckExistsID($id);
+        if ($checkid == 1) {
+            $result['err']   = 0;
+            $result['value'] = 1;
+            $result['idkey'] = '';
+            $this->response($result);
+        } else {
+            // map id
+            if ($imei != 'ios') {
+                $checkimei = $this->maccount->CheckExists($imei);
+                if ($checkimei > 0) {
+                    $result['err']   = 0;
+                    $result['value'] = 1;
+                    $result['idkey'] = $this->cvskey->genidkey($checkimei, self::keyid, self::iv);
+                    $this->response($result);
+                }
+            }
+            $result['err']   = 0;
+            $result['value'] = 0;
+            $this->response($result);
+        }
     }
 }
