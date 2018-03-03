@@ -55,17 +55,17 @@ Class Account extends REST_Controller {
     }
 
     /**
-     * Create account
+     * Check id key exists
      *
+     * @param string idkey
      * @param string emei
-     * @param string name
      * @param string key hashkey
-     * @param string refid
      *
      * @method post
      * @url /5050/account/checkidkeyexists
      *
      * @return void json
+     * todo: se quay tro lai sau
      */
     function checkidkeyexists_post() {
         $idkey     = $this->post('idkey');
@@ -101,5 +101,46 @@ Class Account extends REST_Controller {
             $result['value'] = 0;
             $this->response($result);
         }
+    }
+
+    /**
+     * Get info account
+     *
+     * @param string idkey
+     * @param string key
+     *
+     * @method post
+     * @url /5050/account/info
+     *
+     * @return void json
+     * todo: se quay tro lai sau
+     */
+    public function info_post() {
+        $keyid     = $this->post('idkey');
+        $clientkey = $this->post('key');
+        $szid      = $this->encrypt->sha256decrypt($keyid, self::keyid, self::iv);
+        //print_r($szid);
+        $id    = $this->cvskey->getid($szid);
+        $check = true;
+
+        // Không check
+        // $this->cvskey->Check2($szid,$clientkey);
+
+        if (!$check) {
+            $result['err']    = self::keyerror;
+            $result['errmsg'] = self::errmsg;
+            $this->response($result);
+        }
+        $result['err']   = $id;
+        $result['value'] = $this->maccount->info($keyid);
+        if (count($result['value']) > 0) {
+            $result['value'][0]['id'] = $result['value'][0]['id'] . ' ';
+            $date                     = date('Ymd');
+            $skinex                   = is_null($result['value'][0]['skinex']) ? $date : $result['value'][0]['skinex'];
+            if ($date > $skinex) {
+                $result['value'][0]['skin'] = 0;
+            }
+        }
+        $this->response($result);
     }
 }
