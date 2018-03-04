@@ -2,7 +2,7 @@
 class Mplay extends CI_Model {
     function __construct() {
         parent::__construct();
-	$this->db5050 = $this->load->database('p5050',TRUE);
+	$this->db5050 = $this->load->database('db5050',TRUE);
     }
     
     function CheckLife($id) {
