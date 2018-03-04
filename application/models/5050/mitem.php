@@ -170,19 +170,25 @@ class Mitem extends CI_Model {
 
     function giftcode($id, $code) {
         $codeinfo = $this->giftcode_getinfo($code);
+
         if (count($codeinfo) == 0) {
             return ['err' => 3, 'errmsg' => 'Giftcode không đúng'];
         }
+
         $date = date("Ymd");
+
         if ($date > $codeinfo['exdate']) {
             return ['err' => 3, 'errmsg' => 'Giftcode đã hết hạn'];
         }
+
         if ($codeinfo['status'] == 0) {
             return ['err' => 3, 'errmsg' => 'Giftcode chưa kích hoạt'];
         }
+
         if ($codeinfo['status'] == 2) {
             return ['err' => 3, 'errmsg' => 'Giftcode sử dụng rồi'];
         }
+
         $result = [];
         switch ($codeinfo['codetype']) {
             case 1:
