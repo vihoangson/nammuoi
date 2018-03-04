@@ -19,7 +19,12 @@ class Cvskey {
     }
 
     public function Check2($szcode, $clientkey) {
-        // return true;
+
+        // DEBUG MOD no need check login
+        if(defined("DEBUGMOD_CHECK_LOGIN") && CHECK_LOGIN == FALSE){
+            return CHECK_LOGIN;
+        }
+
         date_default_timezone_set("Asia/Saigon");
         $id          = $this->getid($szcode);
         $date        = getdate();

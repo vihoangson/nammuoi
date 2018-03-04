@@ -1,5 +1,4 @@
 <?php
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
 
@@ -21,6 +20,7 @@ class Play extends REST_Controller {
         $this->load->model('5050/mplay');
         $this->load->library('cvskey');
         $this->load->library('encrypt');
+
     }
 
     /**
@@ -30,7 +30,8 @@ class Play extends REST_Controller {
      * @method post
      * @url /5050/play/checklife
      */
-    public function checklife() {
+    public function checklife_post() {
+
         // $emei = $this->post('emei');
         $clientkey = $this->post('key');
         $idkey     = $this->post('idkey');
