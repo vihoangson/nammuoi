@@ -522,6 +522,9 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+$config['modules_locations'] = array(
+    APPPATH.'modules/' => '../modules/',
+);
 
 if(is_dir(__DIR__.'/dev_config')){
     require_once __DIR__.'/dev_config/config.php';
