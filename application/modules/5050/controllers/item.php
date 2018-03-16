@@ -83,7 +83,7 @@ class Item extends REST_Controller {
 
 
     function angel2ladder_post() {
-        $this->load->model('5050/maccount');
+        $this->load->model('maccount');
         // $emei = $this->post('emei');
         $clientkey = $this->post('key');
         $qty       = is_numeric($this->post('qty')) ? $this->post('qty') : 0;
@@ -145,7 +145,7 @@ class Item extends REST_Controller {
 
 
     function angeltrade_post() {
-        $this->load->model('5050/maccount');
+        $this->load->model('maccount');
         $err[1] = 'Chuyển thiên sứ thành công';
         $err[2] = 'Bạn không đủ thiên sứ';
         // $emei = $this->post('emei');
@@ -201,7 +201,7 @@ class Item extends REST_Controller {
 
 
     function laddertrade_post() {
-        $this->load->model('5050/maccount');
+        $this->load->model('maccount');
         $err[1] = 'Chuyển cầu thang thành công';
         $err[2] = 'Bạn không đủ cầu thang';
         // $emei = $this->post('emei');

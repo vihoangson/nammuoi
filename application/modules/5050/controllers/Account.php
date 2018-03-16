@@ -5,6 +5,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /** @noinspection PhpIncludeInspection */
 require APPPATH . 'libraries/REST_Controller.php';
 
+/**
+ * @property Maccount maccount
+ */
 Class Account extends REST_Controller {
 
     const keyerror = 1;
@@ -17,7 +20,8 @@ Class Account extends REST_Controller {
 
         $this->load->library('cvskey');
         $this->load->library('encrypt');
-        $this->load->model('5050/maccount');
+        $this->load->model('maccount');
+
     }
 
 
