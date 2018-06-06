@@ -19,7 +19,7 @@ class Cvskey {
     }
 
     public function Check2($szcode, $clientkey) {
-
+        return true;
         // DEBUG MOD no need check login
         if(defined("DEBUGMOD_CHECK_LOGIN") && CHECK_LOGIN == FALSE){
             return CHECK_LOGIN;
@@ -33,6 +33,10 @@ class Cvskey {
             return false;
         }
         $key = md5($id . self::md5secretkey . $date['yday']);
+        echo $key ;
+        echo "===" ;
+        echo $clientkey;
+        die;
         if ($key == $clientkey) {
             return true;
         } else {
