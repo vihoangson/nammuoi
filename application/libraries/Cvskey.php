@@ -31,7 +31,7 @@ class Cvskey {
      * @return bool
      */
     public function Check2($szcode, $clientkey) {
-        return true;
+        //return true;
         // DEBUG MOD no need check login
         if(defined("DEBUGMOD_CHECK_LOGIN") && CHECK_LOGIN == FALSE){
             return CHECK_LOGIN;
