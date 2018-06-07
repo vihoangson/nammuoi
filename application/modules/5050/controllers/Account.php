@@ -6,7 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . 'libraries/REST_Controller.php';
 
 /**
- * @property Maccount maccount
+ * @property Maccount   maccount
+ * @property Cvskey     cvskey
+ * @property MY_Encrypt encrypt
  */
 Class Account extends REST_Controller {
 
@@ -40,7 +42,6 @@ Class Account extends REST_Controller {
      */
     public function insert_post() {
 
-
         $emei      = $this->post('emei');
         $name      = $this->post('name');
         $clientkey = $this->post('key');
@@ -72,17 +73,27 @@ Class Account extends REST_Controller {
      * todo: se quay tro lai sau
      */
     function checkidkeyexists_post() {
-        $idkey     = $this->post('idkey');
-        $imei      = $this->post('emei');
-        $clientkey = $this->post('key');
-        $szid      = $this->encrypt->sha256decrypt($idkey, self::keyid, self::iv);
 
+        $clientkey = $this->post('key');
+
+        // Số id được lưu trong db sau khi được mã hóa
+        $idkey = $this->post('idkey');
+
+        // Số imei được lưu trong db
+        $imei = $this->post('emei');
+
+        $szid = $this->encrypt->sha256decrypt($idkey, self::keyid, self::iv);
+
+        // Check thiết bị
         $checkkey = $this->cvskey->Check2($szid, $clientkey);
+        // Kiểm tra không hợp lệ trả ra lỗi
         if (!$checkkey) {
             $result['err']    = self::keyerror;
             $result['errmsg'] = self::errmsg;
             $this->response($result);
         }
+
+        // Lấy Id của user
         $id      = $this->cvskey->getid($szid);
         $checkid = $this->maccount->CheckExistsID($id);
         if ($checkid == 1) {
@@ -91,8 +102,8 @@ Class Account extends REST_Controller {
             $result['idkey'] = '';
             $this->response($result);
         } else {
-            // map id
             if ($imei != 'ios') {
+                // Kiểm tra dựa vào imei
                 $checkimei = $this->maccount->CheckExists($imei);
                 if ($checkimei > 0) {
                     $result['err']   = 0;
@@ -100,10 +111,12 @@ Class Account extends REST_Controller {
                     $result['idkey'] = $this->cvskey->genidkey($checkimei, self::keyid, self::iv);
                     $this->response($result);
                 }
+            } else {
+                // ??? $imei == 'ios' trường hợp này là khi nào ?
+                $result['err']   = 0;
+                $result['value'] = 0;
+                $this->response($result);
             }
-            $result['err']   = 0;
-            $result['value'] = 0;
-            $this->response($result);
         }
     }
 
@@ -123,12 +136,9 @@ Class Account extends REST_Controller {
         $keyid     = $this->post('idkey');
         $clientkey = $this->post('key');
         $szid      = $this->encrypt->sha256decrypt($keyid, self::keyid, self::iv);
-        //print_r($szid);
-        $id    = $this->cvskey->getid($szid);
-        $check = true;
+        $id        = $this->cvskey->getid($szid);
 
-        // Không check
-        // $this->cvskey->Check2($szid,$clientkey);
+        $check = $this->cvskey->Check2($szid, $clientkey);
 
         if (!$check) {
             $result['err']    = self::keyerror;

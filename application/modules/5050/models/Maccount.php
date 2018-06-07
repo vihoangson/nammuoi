@@ -7,6 +7,11 @@ class Maccount extends CI_Model {
         $this->db5050 = $this->load->database('db5050', true);
     }
 
+    /**
+     * @param $emei
+     *
+     * @return int
+     */
     function CheckExists($emei) {
         // if ($emei=='ios')
         // return 0;
@@ -22,6 +27,11 @@ class Maccount extends CI_Model {
         return $result;
     }
 
+    /**
+     * @param $id
+     *
+     * @return int 0 | 1
+     */
     function CheckExistsID($id) {
         $id    = is_numeric($id) ? $id : 0;
         $sql   = "SELECT 1 FROM tbluser where id=$id LIMIT 1";
@@ -70,6 +80,11 @@ class Maccount extends CI_Model {
         return $idkey;
     }
 
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
     function info($id) {
         $sql   = "SELECT 
 				id,
