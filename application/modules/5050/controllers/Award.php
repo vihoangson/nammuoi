@@ -1,6 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
 
+/**
+ * @property Maward maward
+ */
 class Award extends REST_Controller {
 
     function __construct() {
@@ -37,10 +40,7 @@ class Award extends REST_Controller {
     function today_get() {
         $result['err']   = 0;
         $result['value'] = $this->maward->TodayAward();
-        $result['err']   = 'abc';
         $this->response($result);
     }
 
 }
-
-?>

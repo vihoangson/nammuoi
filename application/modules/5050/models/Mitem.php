@@ -125,6 +125,11 @@ class Mitem extends CI_Model {
     }
 
 
+    /**
+     * @param $id
+     *
+     * @return array
+     */
     function binoculars_use($id) {
         if ($this->binoculars_check($id) <= 0) {
             return [];
@@ -134,6 +139,7 @@ class Mitem extends CI_Model {
         $result               = $query->result_array();
         $resultedit[0]['msg'] = 'Top 3 hien tai:';
         $resultedit[1]['msg'] = '';
+
         if (count($result) > 0) {
             $sql   = "UPDATE tbluser SET binoculars=binoculars-1 WHERE id=$id";
             $query = $this->db5050->query($sql);
@@ -252,6 +258,9 @@ class Mitem extends CI_Model {
     }
 
 
+    /**
+     * @return mixed
+     */
     function binoculars_usefree() {
         $sql    = "SELECT currentfloor,count(1) as qty FROM tbluser WHERE currentfloor>0 GROUP BY currentfloor ORDER BY currentfloor DESC LIMIT 3";
         $query  = $this->db5050->query($sql);
@@ -261,6 +270,11 @@ class Mitem extends CI_Model {
     }
 
 
+    /**
+     * @param $id
+     * @param $action
+     * @param $result
+     */
     private function WriteItemLog($id, $action, $result) {
         date_default_timezone_set("Asia/Saigon");
         $filename = $_SERVER['DOCUMENT_ROOT'] . '/log/' . date('Ymd') . '.log';
