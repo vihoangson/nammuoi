@@ -58,6 +58,8 @@ class Play extends REST_Controller {
         $idkey     = $this->post('idkey');
         $szid      = $this->encrypt->sha256decrypt($idkey, self::keyid, self::iv);
         $id        = $this->cvskey->getid($szid);
+
+
         $check     = $this->cvskey->Check2($szid, $clientkey);
         if (!$check) {
             $result['err']    = self::keyerror;

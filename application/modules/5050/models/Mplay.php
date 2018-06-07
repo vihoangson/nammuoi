@@ -88,5 +88,3 @@ class Mplay extends CI_Model {
         }
     }
 }
-
-?>
